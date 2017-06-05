@@ -192,6 +192,8 @@ module Constants
   )
 
   # Service configurations for various services.
+
+  # GCE.
   COMPUTE_PARAMS = {
     resource: {
       type: COMPUTE_CONSTANTS[:resource_type],
@@ -207,6 +209,7 @@ module Constants
     }
   }
 
+  # GAE.
   VMENGINE_PARAMS = {
     resource: {
       type: APPENGINE_CONSTANTS[:resource_type],
@@ -224,6 +227,7 @@ module Constants
     }
   }
 
+  # GKE Container.
   CONTAINER_TAG = "kubernetes.#{CONTAINER_POD_NAME}_" \
                   "#{CONTAINER_NAMESPACE_NAME}_#{CONTAINER_CONTAINER_NAME}"
 
@@ -276,6 +280,7 @@ module Constants
     }
   }
 
+  # Cloud Functions.
   CLOUDFUNCTIONS_TAG = "kubernetes.#{CLOUDFUNCTIONS_POD_NAME}_" \
                         "#{CLOUDFUNCTIONS_NAMESPACE_NAME}_" \
                         "#{CLOUDFUNCTIONS_CONTAINER_NAME}"
@@ -321,6 +326,7 @@ module Constants
     }
   }
 
+  # Cloud Dataflow.
   DATAFLOW_PARAMS = {
     resource: {
       type: DATAFLOW_CONSTANTS[:resource_type],
@@ -340,6 +346,7 @@ module Constants
     }
   }
 
+  # Cloud Dataproc.
   DATAPROC_PARAMS = {
     resource: {
       type: DATAPROC_CONSTANTS[:resource_type],
@@ -358,6 +365,7 @@ module Constants
     }
   }
 
+  # Cloud ML.
   ML_PARAMS = {
     resource: {
       type: ML_CONSTANTS[:resource_type],
