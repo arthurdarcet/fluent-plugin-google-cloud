@@ -195,9 +195,6 @@ module Fluent
     attr_reader :project_id
     attr_reader :zone
     attr_reader :vm_id
-    attr_reader :running_on_managed_vm
-    attr_reader :gae_backend_name
-    attr_reader :gae_backend_version
     attr_reader :resource
     attr_reader :common_labels
 
@@ -299,9 +296,6 @@ module Fluent
           missing.join(' ')
       end
 
-      # Default this to false; it is only overwritten if we detect Managed VM.
-      @running_on_managed_vm = false
-
       # Default this to false; it is only overwritten if we detect Cloud
       # Functions.
       @running_cloudfunctions = false
@@ -326,15 +320,11 @@ module Fluent
           # Do nothing, just don't populate other service's labels.
           if attributes.include?('gae_backend_name') &&
              attributes.include?('gae_backend_version')
-            # Managed VM
-            @running_on_managed_vm = true
-            @gae_backend_name =
-                fetch_gce_metadata('instance/attributes/gae_backend_name')
-            @gae_backend_version =
-                fetch_gce_metadata('instance/attributes/gae_backend_version')
             @resource.type = APPENGINE_CONSTANTS[:resource_type]
-            @resource.labels['module_id'] = @gae_backend_name
-            @resource.labels['version_id'] = @gae_backend_version
+            @resource.labels['module_id'] = fetch_gce_metadata(
+              'instance/attributes/gae_backend_name')
+            @resource.labels['version_id'] = fetch_gce_metadata(
+              'instance/attributes/gae_backend_version')
           elsif attributes.include?('kube-env')
             # Kubernetes/Container Engine
             @resource.type = CONTAINER_CONSTANTS[:resource_type]
@@ -1249,7 +1239,7 @@ module Fluent
     def log_name(tag, resource)
       if resource.type == CLOUDFUNCTIONS_CONSTANTS[:resource_type]
         tag = 'cloud-functions'
-      elsif @running_on_managed_vm
+      elsif resource.type == APPENGINE_CONSTANTS[:resource_type]
         # Add a prefix to Managed VM logs to prevent namespace collisions.
         tag = "#{APPENGINE_CONSTANTS[:service]}/#{tag}"
       elsif resource.type == CONTAINER_CONSTANTS[:resource_type]
